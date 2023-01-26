@@ -36,4 +36,13 @@ class Order extends Model
         return $this->hasMany('App\Models\Notification');
     }
 
+    public function getPaymentMethodAttribute($val){
+        if($val==1){
+            return 'Cash';
+        }
+        else{
+            return 'Online';
+        }
+    }
+
 }

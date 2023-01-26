@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\MainController;
 use App\Http\Controllers\Api\MealController;
 use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\client\AuthController;
+use App\Http\Controllers\Api\client\OrderController;
 use App\Http\Controllers\Api\resturant\ResturantAuthController;
 
 
@@ -52,6 +53,7 @@ Route::group(['middleware'=>'auth:api-clients'],function(){
     Route::get('/All-offers',[OfferController::class,'offers']);
     Route::post('/profile/update',[AuthController::class,'updateProfile']);
     Route::get('/profile/update',[AuthController::class,'updateProfile']);
+    Route::post('/order/make',[OrderController::class,'makeOrder']);
 
 });
 
