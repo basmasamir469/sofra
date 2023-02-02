@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\App;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -32,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
         App::singleton('auth_client_id',function(){
             return auth('api-clients')->user()->id;
         });
+
+        Paginator::useBootstrapFive();
+        Paginator::useBootstrapFour();
+
 
     }
 }

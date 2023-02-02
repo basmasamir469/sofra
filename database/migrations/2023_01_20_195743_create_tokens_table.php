@@ -10,12 +10,10 @@ class CreateTokensTable extends Migration {
 		Schema::create('tokens', function(Blueprint $table) {
 			$table->increments('id');
 			$table->timestamps();
-			$table->softDeletes();
 			$table->integer('tokennable_id');
 			$table->string('tokennable_type', 191);
 			$table->string('token');
-			$table->string('api_token');
-			$table->string('type');
+			$table->enum('type',['ios','android']);
 		});
 	}
 

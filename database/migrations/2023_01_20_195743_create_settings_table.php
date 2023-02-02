@@ -12,6 +12,7 @@ class CreateSettingsTable extends Migration {
 			$table->timestamps();
 			$table->text('about_app');
 			$table->decimal('app_comission');
+			$table->json('accounts')->nullable();
 			$table->string('fb_link')->nullable();
 			$table->string('insta_link')->nullable();
 			$table->string('tw_link')->nullable();

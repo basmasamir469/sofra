@@ -7,6 +7,6 @@ interface OrderStatus{
     const Order_pending=1;
     const Order_accepted=2;
     const Order_rejected=3;
-    const Order_declined=4;
+    const Order_delivered=4;
     
 }

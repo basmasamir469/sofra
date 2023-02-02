@@ -15,10 +15,15 @@ class Notification extends Model
 
     protected $dates = ['deleted_at'];
     protected $fillable = array('notificationable_id', 'notificationable_type', 'order_id', 'title', 'content');
-
     public function order()
     {
         return $this->belongsTo('App\Models\Order');
     }
+
+    public function notificationable()
+    {
+        return $this->morphTo();
+    }
+
 
 }

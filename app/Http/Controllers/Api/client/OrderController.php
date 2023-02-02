@@ -4,14 +4,18 @@ namespace App\Http\Controllers\Api\client;
 
 use App\Models\Meal;
 use App\Models\Order;
+use App\Models\Token;
 use App\Models\Setting;
 use App\Models\Resturant;
 use Illuminate\Http\Request;
+use App\constants\OrderStatus;
 use App\constants\PaymentMethod;
 use App\constants\ResturantStatus;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
+use App\Http\Resources\NotificationResource;
+use App\Http\Resources\NotificationCollection;
 
 class OrderController extends Controller
 {
@@ -46,35 +50,108 @@ class OrderController extends Controller
          foreach($order->meals as $meal){
             $meals_cost += $meal->pivot->price * $meal->pivot->quantity;
          }
-         if($meals_cost >= $order->resturant->minimum_order){
-         $setting=Setting::first();
-        //  $meals_cost=$order->meals->pivot->sum('price');
-         $delivery_cost=$order->resturant->delivery_cost;
-         $total_cost=$meals_cost+$delivery_cost;
-         $app_comission=$setting->app_comission * $meals_cost;
-         $net=$meals_cost-$app_comission;
-         $order->update([
-         'meals_cost'=>$meals_cost,
-         'delivery_cost'=>$delivery_cost,
-         'total_cost'=>$total_cost,
-         'app_comission'=>$app_comission,
-         'net'=>$net
-         ]);
-         DB::commit();
-         return responseJson(1,'order is sent successfully ',new OrderResource($order));
-     }
-     else{
-        DB::rollback();
-        return responseJson(0,'sorry minimum order is '.$resturant->minimum_order);
-        // $order->delete();
-     }
-    }else{
+         if($meals_cost < $order->resturant->minimum_order){
+            DB::rollback();
+            return responseJson(0,'sorry minimum order is '.$resturant->minimum_order);
+            // $order->delete();    
+       }
+        $setting=Setting::first();
+        $delivery_cost=$order->resturant->delivery_cost;
+        $total_cost=$meals_cost+$delivery_cost;
+        $app_comission=$setting->app_comission * $meals_cost;
+        $net=$meals_cost-$app_comission;
+        $order->update([
+        'meals_cost'=>$meals_cost,
+        'delivery_cost'=>$delivery_cost,
+        'total_cost'=>$total_cost,
+        'app_comission'=>$app_comission,
+        'net'=>$net
+        ]);
+
+        $notification=$order->resturant->notifications()->create([
+           'order_id'=>$order->id,
+           'title'=>'New Order',
+           'content'=>'there is order by '.$order->client->name.' Order Details '.json_encode(new OrderResource($order->fresh()->load('meals'))),
+
+            ]);
+        $tokens=$order->resturant->tokenss()->pluck('token')->toArray();
+           if($tokens){
+           $title=$notification->title;
+           $body=$notification->content;
+           $data=[
+               'order_id'=>$order->id
+           ];
+           $send=notifyByFirebase($title,$body,$tokens,$data);
+           }
+        DB::commit();
+        return responseJson(1,'order is sent successfully ',new OrderResource($order->fresh()->load('meals')));
+
+    }
+    else{
         return responseJson(0,'sorry resturant is closed now please try again later');
     }
 }
 
-public function orderDetails(){
+
+public function CurrentOrders(){
+    $client=auth('api-clients')->user();
+    $current_orders=$client->orders()->where('status',OrderStatus::Order_pending)->paginate(10);
+    if(count($current_orders) > 0){
+        return responseJson(1,'Current Orders',$current_orders);
+    }
+    return responseJson('1','no orders');
+
 
 }
+
+public function CancelOrder(Request $request){
+
+  if ($request->has('cancel')){
+     $order=Order::findOrFail($request->order_id);
+     if($order->status != OrderStatus::Order_pending){
+         return responseJson(0,'error');
+     }
+     DB::beginTransaction();
+     if($order->update(['status'=>OrderStatus::Order_cancelled])){
+       $notification=$order->resturant->notifications()->create([
+         'order_id'=>$order->id,
+         'title'=>'order is cancelled',
+         'content'=>'there is order by '.$order->client->name.' Order Details '.json_encode(new OrderResource($order->fresh()->load('meals'))),
+     ]);
+      $tokens=$order->resturant->tokenss()->pluck('token')->toArray();
+         if($tokens){
+         $title=$notification->title;
+         $body=$notification->content;
+         $data=[
+             'order_id'=>$order->id
+         ];
+         $send=notifyByFirebase($title,$body,$tokens,$data);
+         DB::commit();
+         return responseJson(1,'order is cancelled',$order);
+         }
+     };
+     
+       }
+    
+    } 
+
+    public function PreviousOrders(){
+        $client=auth('api-clients')->user();
+        $previous_orders=$client->orders()->where('status',OrderStatus::Order_delivered)->paginate(10);
+        if(count($previous_orders) > 0){
+            return responseJson(1,'previous Orders',$previous_orders);
+        }
+        return responseJson('1','no orders');
+    
+    }
+   
+    public function notifications(){
+
+        $clients=auth('api-clients')->user();
+        return responseJson(1,'my notifications',new NotificationCollection($clients->notifications));
+    
+    }
+    
+
 
 }

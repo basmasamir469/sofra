@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Token;
+use App\Models\Notification;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+
 class Resturant extends Authenticatable
 {
 
@@ -56,6 +59,21 @@ class Resturant extends Authenticatable
     public function meals()
     {
         return $this->hasMany('App\Models\Meal');
+    }
+
+    public function tokenss()
+    {
+        return $this->morphMany(Token::class, 'tokennable');
+    }
+   
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notificationable');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany('App\Models\Review');
     }
 
 

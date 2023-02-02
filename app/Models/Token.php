@@ -14,6 +14,12 @@ class Token extends Model
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
-    protected $fillable = array('tokennable_id', 'tokennable_type', 'token', 'api_token', 'type');
+    protected $fillable = array('tokennable_id', 'tokennable_type', 'token', 'type');
+
+    public function tokennable()
+    {
+        return $this->morphTo();
+    }
+
 
 }

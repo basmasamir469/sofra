@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\City;
+use App\Models\Contact;
 use App\Models\Setting;
 use App\Models\Category;
 use App\Models\District;
@@ -87,17 +88,23 @@ class MainController extends Controller
         }
 
         public function contactus(Request $request){
-            $validator=Validator::make($request->all());
-            if($validator->falis()){
+            $validator=Validator::make($request->all(),[
+                'name'=>'required',
+                'email'=>'required',
+                'phone'=>'required',
+                'message'=>'required',
+                'status'=>'required|in:suggestion,complaint,enquiry'
+            ]);
+            if($validator->fails()){
                 return responseJson(0,$validator->errors()->first(),$validator->errors());
             }
             
             $contact=Contact::create($request->all());
-            return responseJson(1,'success',$contact);
+            return responseJson(1,'message is sent successfully',$contact);
         }
 
-        public function resturant(){
-            $resturant=auth('api-resturants')->user();
+        public function resturant($id){
+            $resturant=Resturant::findOrFail($id);
             if($resturant->status==ResturantStatus::Resturant_opened){
                 $resturant->status='opened';
            }
@@ -105,6 +112,20 @@ class MainController extends Controller
                 $resturant->status='closed';
            }
             return responseJson(1,'success',new ResturantResource($resturant));
+        }
+        public function resturantComissions(){
+            $settings=Setting::first();
+            $resturant=auth('api-resturants')->user();
+            $sales=$resturant->orders->sum('meals_cost');
+            $app_comission=$resturant->orders->sum('app_comission');
+            $paid=0;
+            $remaining=$app_comission-$paid;
+            $settings->update(['accounts'=>['bank-alahli'=>29383829292,'bank-masr'=>28382829293]]);
+            return responseJson(1,'success',['settings'=>$settings,'sales'=>$sales,
+            'app_comission'=>$app_comission,
+            'paid'=>$paid,
+            'remaining'=>$remaining]);
+
         }
 
 }

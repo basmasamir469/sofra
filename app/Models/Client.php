@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Token;
+use App\Models\Notification;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
@@ -35,9 +37,21 @@ class Client extends Model
         return $this->belongsTo('App\Models\District');
     }
 
-    public function comments()
+    public function reviews()
     {
         return $this->hasMany('App\Models\Review');
     }
+
+    public function tokenss()
+    {
+        return $this->morphMany(Token::class, 'tokennable');
+    }
+
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notificationable');
+    }
+
+
 
 }

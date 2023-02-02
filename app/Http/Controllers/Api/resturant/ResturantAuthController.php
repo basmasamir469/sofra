@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\resturant;
 
+use App\Models\Token;
 use App\Models\Client;
 use App\Models\Resturant;
 use App\traits\ImageTrait;
@@ -192,5 +193,26 @@ else{
 
   }
 }
+public function logout(Request $request){
+    $request->user()->currentAccessToken()->delete();
+    return responseJson(1,'you logged out successfully');
+}
+
+
+public function registerToken(Request $request){
+    $validator=validator()->make($request->all(),[
+        'token'=>'required',
+        'type'=>'required|in:ios,android'
+   ]);
+   if($validator->fails()){
+       return responseJson(0,$validator->errors()->first(),$validator->errors());
+   }
+   Token::where('token',$request->token)->delete();
+   $request->user()->tokenss()->create($request->all());
+   return responseJson(1,'registered successfully',$request->user()->tokens);
+
+
+}
+
 
 }

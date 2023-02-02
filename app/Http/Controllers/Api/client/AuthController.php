@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\client;
 
+use App\Models\Token;
 use App\Models\Client;
 use App\Mail\ResetPassword;
 use Illuminate\Http\Request;
@@ -123,6 +124,10 @@ else{
         }
 
 
+    }
+    public function logout(Request $request){
+        $request->user()->currentAccessToken()->delete();
+        return responseJson(1,'you logged out successfully');
     }
     public function updateProfile(Request $request){
           $client=auth('api-clients')->user();
