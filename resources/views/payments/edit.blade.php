@@ -18,8 +18,7 @@
           @method('PATCH')
           <div class="form-group">
             <label for="defaultSelect" class=" col-1 form-label"> Resturant:</label>
-            <div class="col-md-8">
-                <select id="defaultSelect" name="resturant_id" class="form-select w-50">
+                <select id="defaultSelect" name="resturant_id" class="form-control form-select w-50">
                     @foreach ($resturants as $resturant )
                     <option value={{$resturant->id}} @if($payment->resturant_id==$resturant->id) selected @endif>{{$resturant->name}}</option>
                     @endforeach
@@ -27,7 +26,7 @@
                 @error('resturant_id')
                 <small id="emailHelp" class="form-text text-danger">{{$message}}</small>
                 @enderror            
-          </div>      
+          </div>   
     <div class="form-group">
     <label for="inputEstimatedBudget">Payment Name</label>
     <input type="text" name="name" value="{{$payment->payment_name}}" id="inputEstimatedBudget" class="form-control">

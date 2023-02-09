@@ -127,5 +127,4 @@ class MainController extends Controller
             'remaining'=>$remaining]);
 
         }
-
 }

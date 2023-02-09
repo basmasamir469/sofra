@@ -32,7 +32,7 @@ class Client extends Model
         return $this->belongsTo('App\Models\City');
     }
 
-    public function districts()
+    public function district()
     {
         return $this->belongsTo('App\Models\District');
     }

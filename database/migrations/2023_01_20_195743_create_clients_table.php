@@ -15,6 +15,7 @@ class CreateClientsTable extends Migration {
 			$table->string('phone', 191);
 			$table->string('email', 191);
 			$table->string('password', 191);
+			$table->boolean('active')->default(0);
 			$table->integer('district_id')->unsigned();
 		});
 	}

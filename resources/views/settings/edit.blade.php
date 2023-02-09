@@ -40,7 +40,7 @@
                     <h4 class="text-bold">Accounts</h4>
                     @foreach ($settings->accounts as $account => $value )
                     <input type="text" class="form-control w-50" name={{$account}} value={{$account}}>
-                    <input type="text" name="accounts[{{$account}}]" value={{$value}} id="inputEstimatedBudget" class="form-control">
+                    <input type="text"  name="accounts[{{$account}}]" value={{$value}} id="inputEstimatedBudget" class="form-control mb-3">
                     @endforeach
                     </div>
                  <div class="form-group">

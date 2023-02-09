@@ -21,6 +21,7 @@ class CreateResturantsTable extends Migration {
 			$table->string('image', 191);
 			$table->string('contact_phone', 191);
 			$table->integer('status');
+			$table->boolean('active')->default(0);
 		});
 	}
 

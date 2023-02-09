@@ -10,6 +10,7 @@ use App\Models\Resturant;
 use Illuminate\Http\Request;
 use App\constants\OrderStatus;
 use App\constants\PaymentMethod;
+use App\traits\NotificationTrait;
 use App\constants\ResturantStatus;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -19,6 +20,7 @@ use App\Http\Resources\NotificationCollection;
 
 class OrderController extends Controller
 {
+    use NotificationTrait;
     //
    public function makeOrder(Request $request){
     $resturant=Resturant::find($request->resturant_id);
@@ -35,12 +37,6 @@ class OrderController extends Controller
         'client_id'=>app('auth_client_id'),
         'resturant_id'=>$request->resturant_id
          ]);
-        //  if($order->payment_method==PaymentMethod::PaymentMethod_cash){
-        //     $order->payment_method='cash';
-        //  }
-        //  else{
-        //     $order->payment_method='online';
-        //  }
          foreach($request->meals as $m){
             $meal=Meal::find($m['id']);
             $order->meals()->attach($meal,['price'=>$meal->price_after_offer?$meal->price_after_offer:$meal->price,
@@ -76,12 +72,7 @@ class OrderController extends Controller
             ]);
         $tokens=$order->resturant->tokenss()->pluck('token')->toArray();
            if($tokens){
-           $title=$notification->title;
-           $body=$notification->content;
-           $data=[
-               'order_id'=>$order->id
-           ];
-           $send=notifyByFirebase($title,$body,$tokens,$data);
+           $this->sendNotification($notification->title,$notification->body,$tokens,[ 'order_id'=>$order->id]);
            }
         DB::commit();
         return responseJson(1,'order is sent successfully ',new OrderResource($order->fresh()->load('meals')));
@@ -106,9 +97,8 @@ public function CurrentOrders(){
 
 public function CancelOrder(Request $request){
 
-  if ($request->has('cancel')){
      $order=Order::findOrFail($request->order_id);
-     if($order->status != OrderStatus::Order_pending){
+     if($order->status != OrderStatus::Order_pending || $order->status != OrderStatus::Order_accepted){
          return responseJson(0,'error');
      }
      DB::beginTransaction();
@@ -120,24 +110,18 @@ public function CancelOrder(Request $request){
      ]);
       $tokens=$order->resturant->tokenss()->pluck('token')->toArray();
          if($tokens){
-         $title=$notification->title;
-         $body=$notification->content;
-         $data=[
-             'order_id'=>$order->id
-         ];
-         $send=notifyByFirebase($title,$body,$tokens,$data);
+       $this->sendNotification($notification->title,$notification->body,$tokens,[ 'order_id'=>$order->id]);
          DB::commit();
          return responseJson(1,'order is cancelled',$order);
          }
      };
      
-       }
     
     } 
 
     public function PreviousOrders(){
         $client=auth('api-clients')->user();
-        $previous_orders=$client->orders()->where('status',OrderStatus::Order_delivered)->paginate(10);
+        $previous_orders=$client->orders()->whereIn('status',[OrderStatus::Order_delivered,OrderStatus::Order_cancelled])->paginate(10);
         if(count($previous_orders) > 0){
             return responseJson(1,'previous Orders',$previous_orders);
         }

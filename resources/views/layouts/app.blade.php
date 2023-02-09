@@ -100,6 +100,24 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                <li class="nav-item">
+                <a href="{{route('resturants.index')}}" class="nav-link">
+                  <i class="nav-icon fas fa-utensils"></i>
+                  <p>
+                    Resturants
+                  </p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="{{route('clients.index')}}" class="nav-link">
+                  <i class="nav-icon fas fa-user"></i>
+                  <p>
+                    Clients
+                  </p>
+                </a>
+              </li>
+
+               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-city"></i>
                   <p>
@@ -171,6 +189,16 @@
                 </ul>
               </li>
 
+              <li class="nav-item">
+                <a href="{{route('orders.index')}}" class="nav-link">
+                  <i class="nav-icon fas fa-shopping-cart"></i>
+                  <p>
+                    Orders
+                  </p>
+                </a>
+              </li>
+
+
             <li class="nav-item">
                 <a href="{{route('offers.index')}}" class="nav-link">
                   <i class="nav-icon fas fa-gift"></i>
@@ -212,6 +240,63 @@
                   </li>
                 </ul>
               </li>
+
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-user-tag"></i>
+                  <p>
+                       Roles
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{route('roles.index')}}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>roles</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{route('roles.create')}}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>add role</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-user"></i>
+                  <p>
+                       Users
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{route('users.index')}}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>users</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{route('users.create')}}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>add user</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <li class="nav-item">
+                <a href="{{route('change_password')}}" class="nav-link">
+                  <i class="nav-icon fas fa-key"></i>
+                  <p>
+                    Change Password
+                  </p>
+                </a>
+              </li>    
 
               <li class="nav-item">
                 <a href="#" class="nav-link">
@@ -315,20 +400,10 @@
             </ul>
           </li>
 
-          <li class="nav-item">
-            <a href="{{route('change_password')}}" class="nav-link">
-              <i class="nav-icon fas fa-key"></i>
-              <p>
-                Change Password
-              </p>
-            </a>
-          </li>
-
-
 
           {{-- <li class="nav-header">EXAMPLES</li> --}}
          </ul>
-      </nav> --}}
+      </nav> 
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->

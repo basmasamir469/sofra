@@ -13,7 +13,7 @@ payments
                   <div class="mb-3 row">
                       <label for="defaultSelect" class=" col-1 form-label"> Resturant:</label>
                       <div class="col-md-8">
-                          <select id="defaultSelect" name="resturant_id" class="form-select w-50">
+                          <select id="defaultSelect" name="resturant_id" class=" form-control form-select w-50">
                               <option value="">select resturant</option>
                               @foreach ($resturants as $resturant )
                               <option value={{$resturant->id}}>{{$resturant->name}}</option>

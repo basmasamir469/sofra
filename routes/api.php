@@ -83,7 +83,8 @@ Route::group(['middleware'=>'auth:api-resturants'],function(){
     Route::get('/resturant/update',[ResturantAuthController::class,'updateResturant']);
     Route::post('/resturant/logout',[ResturantAuthController::class,'logout']);
     Route::get('/neworders',[App\Http\Controllers\Api\resturant\OrderController::class,'NewOrders']);
-    Route::post('/order/actions',[App\Http\Controllers\Api\resturant\OrderController::class,'OrderActions']);
+    Route::post('/order/reject',[App\Http\Controllers\Api\resturant\OrderController::class,'rejectOrders']);
+    Route::post('/order/accept',[App\Http\Controllers\Api\resturant\OrderController::class,'acceptOrders']);
     Route::get('/currentorders',[App\Http\Controllers\Api\resturant\OrderController::class,'CurrentOrders']);
     Route::post('/order/confirm',[App\Http\Controllers\Api\resturant\OrderController::class,'ConfirmOrder']);
     Route::get('/previousorders',[App\Http\Controllers\Api\resturant\OrderController::class,'PreviousOrders']);

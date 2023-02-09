@@ -46,27 +46,27 @@ class Order extends Model
     }
 
 
-    public function getStatusdAttribute($val){
-        switch ($val) {
-            case 0:
-                # code...
-                return 'Cancelled';
-                break;
-            case 1:
-                return 'Pending';
-                break;
-            case 2:
-                return 'Accepted';
-                break;
-            case 3:
-                return 'Rejected';
-                break;
-            case 4:
-                return 'Delivered';
-                break;
+    // public function getStatusAttribute($val){
+    //     switch($val) {
+    //         case 0:
+    //             # code...
+    //             return 'Cancelled';
+    //             break;
+    //         case 1:
+    //             return 'Pending';
+    //             break;
+    //         case 2:
+    //             return 'Accepted';
+    //             break;
+    //         case 3:
+    //             return 'Rejected';
+    //             break;
+    //         case 4:
+    //             return 'Delivered';
+    //             break;
     
-        }
-    }
+    //     }
+    // }
 
 
 }
