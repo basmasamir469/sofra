@@ -28,7 +28,7 @@ use App\Http\Controllers\ResturantController;
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::group(['middleware'=>'auth'],function(){
+Route::group(['middleware'=>['auth','auto-check-permission']],function(){
     Route::get('/', function () {
         return view('home');
     });       
